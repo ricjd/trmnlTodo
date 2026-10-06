@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WFWorkflowClientVersion</key>
+	<string>1150</string>
+	<key>WFWorkflowMinimumClientVersion</key>
+	<integer>900</integer>
+	<key>WFWorkflowMinimumClientVersionString</key>
+	<string>16.0</string>
+	<key>WFWorkflowIcon</key>
+	<dict>
+		<key>WFWorkflowIconStartColor</key>
+		<integer>431817727</integer>
+		<key>WFWorkflowIconGlyphNumber</key>
+		<integer>61440</integer>
+	</dict>
+	<key>WFWorkflowTypes</key>
+	<array/>
+	<key>WFWorkflowInputContentItemClasses</key>
+	<array/>
+	<key>WFWorkflowImportQuestions</key>
+	<array/>
+	<key>WFWorkflowActions</key>
+	<array>
+
+		<!-- 1. Find Reminders. After import, open this action and set:
+		     Completed = No, sort by Due Date ascending, and consider a
+		     result limit — none of that filter/sort config could be
+		     encoded reliably here, so it imports wide open (all reminders,
+		     unsorted) until you configure it by hand. -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.reminders.find</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>7F6C6C55-391F-426F-80A8-8343DBC4D3B9</string>
+			</dict>
+		</dict>
+
+		<!-- 2. Repeat with Each (start) — over the Find Reminders results -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.repeat.each</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFControlFlowMode</key>
+				<integer>0</integer>
+				<key>GroupingIdentifier</key>
+				<string>85A2853A-8526-43E2-AC89-D87F9BD8CC50</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>7F6C6C55-391F-426F-80A8-8343DBC4D3B9</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 2a. Format Date: Repeat Item's Due Date, style Relative -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.date</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>E3344E1F-F1D2-4B07-A062-5DFE3B9D2ABF</string>
+				<key>WFDateFormatStyle</key>
+				<string>Relative</string>
+				<key>WFDateActionDate</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>Variable</string>
+						<key>VariableName</key>
+						<string>Repeat Item</string>
+						<key>Aggrandizements</key>
+						<array>
+							<dict>
+								<key>Type</key>
+								<string>WFPropertyVariableAggrandizement</string>
+								<key>PropertyName</key>
+								<string>Due Date</string>
+							</dict>
+						</array>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Set Variable: DueWord <- output of 2a -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>DueWord</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>E3344E1F-F1D2-4B07-A062-5DFE3B9D2ABF</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 2b. Format Date: Repeat Item's Due Date, style Short -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.date</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>CA7A29CB-5FF6-45FB-A532-5C962BE1F741</string>
+				<key>WFDateFormatStyle</key>
+				<string>Short</string>
+				<key>WFDateActionDate</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>Variable</string>
+						<key>VariableName</key>
+						<string>Repeat Item</string>
+						<key>Aggrandizements</key>
+						<array>
+							<dict>
+								<key>Type</key>
+								<string>WFPropertyVariableAggrandizement</string>
+								<key>PropertyName</key>
+								<string>Due Date</string>
+							</dict>
+						</array>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Set Variable: DueShort <- output of 2b -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>DueShort</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>CA7A29CB-5FF6-45FB-A532-5C962BE1F741</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 2c. Text: build one JSON object for this reminder. NOTE: title/list
+		     are not escaped for embedded quote characters — a reminder titled
+		     with a literal " would break the JSON. Low-risk edge case, but
+		     worth knowing. -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.gettext</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>426139EC-E1DD-4FAB-85A8-0B538A4DBEE7</string>
+				<key>WFTextActionText</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>string</key>
+						<string>{"title":"&#65532;","list":"&#65532;","due":"&#65532;","due_word":"&#65532;"}</string>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{10, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>Repeat Item</string>
+							</dict>
+							<key>{21, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>Repeat Item</string>
+								<key>Aggrandizements</key>
+								<array>
+									<dict>
+										<key>Type</key>
+										<string>WFPropertyVariableAggrandizement</string>
+										<key>PropertyName</key>
+										<string>List</string>
+									</dict>
+								</array>
+							</dict>
+							<key>{31, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>DueShort</string>
+							</dict>
+							<key>{46, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>DueWord</string>
+							</dict>
+						</dict>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 2d. Add to Variable: Todos <- this reminder's JSON snippet -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.appendvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>Todos</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>426139EC-E1DD-4FAB-85A8-0B538A4DBEE7</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Repeat with Each (end) -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.repeat.each</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFControlFlowMode</key>
+				<integer>2</integer>
+				<key>GroupingIdentifier</key>
+				<string>85A2853A-8526-43E2-AC89-D87F9BD8CC50</string>
+			</dict>
+		</dict>
+
+		<!-- 3. Combine Text: join the Todos list with commas into one string -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.text.combine</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>1E5C940E-1EA1-49C8-8587-30E29B22B292</string>
+				<key>WFTextSeparator</key>
+				<string>Custom</string>
+				<key>WFTextCustomSeparator</key>
+				<string>,</string>
+				<key>text</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>Variable</string>
+						<key>VariableName</key>
+						<string>Todos</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Set Variable: TodosJoined <- output of Combine Text -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>TodosJoined</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>1E5C940E-1EA1-49C8-8587-30E29B22B292</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 4. Format Date: Current Date, style ISO 8601 -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.date</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>48E52CF9-4E4A-475E-B5AC-D4F52F6B2A78</string>
+				<key>WFDateFormatStyle</key>
+				<string>ISO 8601</string>
+				<key>WFDateActionDate</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>Variable</string>
+						<key>VariableName</key>
+						<string>Current Date</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Set Variable: GeneratedAt <- output of the ISO 8601 Format Date -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.setvariable</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFVariableName</key>
+				<string>GeneratedAt</string>
+				<key>WFInput</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>48E52CF9-4E4A-475E-B5AC-D4F52F6B2A78</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 5. Text: assemble the final merge_variables JSON payload -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.gettext</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>UUID</key>
+				<string>9AFEB5EB-D481-41CB-A37B-2C0C9A4D2266</string>
+				<key>WFTextActionText</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>string</key>
+						<string>{"merge_variables":{"todos":[&#65532;],"plugin_title":"Todo","generated_at":"&#65532;"}}</string>
+						<key>attachmentsByRange</key>
+						<dict>
+							<key>{29, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>TodosJoined</string>
+							</dict>
+							<key>{70, 1}</key>
+							<dict>
+								<key>Type</key>
+								<string>Variable</string>
+								<key>VariableName</key>
+								<string>GeneratedAt</string>
+							</dict>
+						</dict>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenString</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- 6. Get Contents of URL: POST the payload to the TRMNL webhook.
+		     After import: replace the placeholder URL with your real webhook
+		     URL, and manually add a Content-Type: application/json header —
+		     that field's encoding was too uncertain to include here reliably.
+		     Also confirm "Request Body" is picked up as the Text from step 5;
+		     re-pick it if that field looks empty after import. -->
+		<dict>
+			<key>WFWorkflowActionIdentifier</key>
+			<string>is.workflow.actions.downloadurl</string>
+			<key>WFWorkflowActionParameters</key>
+			<dict>
+				<key>WFURL</key>
+				<string>https://usetrmnl.com/api/custom_plugins/REPLACE_WITH_YOUR_WEBHOOK_ID</string>
+				<key>WFHTTPMethod</key>
+				<string>POST</string>
+				<key>WFHTTPBodyType</key>
+				<string>File</string>
+				<key>WFRequestVariable</key>
+				<dict>
+					<key>Value</key>
+					<dict>
+						<key>Type</key>
+						<string>ActionOutput</string>
+						<key>OutputUUID</key>
+						<string>9AFEB5EB-D481-41CB-A37B-2C0C9A4D2266</string>
+					</dict>
+					<key>WFSerializationType</key>
+					<string>WFTextTokenAttachment</string>
+				</dict>
+			</dict>
+		</dict>
+
+	</array>
+</dict>
+</plist>

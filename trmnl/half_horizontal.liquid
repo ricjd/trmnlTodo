@@ -1,0 +1,48 @@
+{% comment %}
+  Half horizontal layout (800x240) — paste into the "Half horizontal" tab.
+  Short on height, wide on width, so we split the list into two side-by-side
+  columns of compact single-line rows instead of one tall list.
+
+  lg: classes bump text size on TRMNL X (>=1024px); OG never reaches that
+  breakpoint so its appearance is unchanged.
+{% endcomment %}
+<div class="layout">
+  <div class="columns">
+    {% assign shown = todos | slice: 0, 6 %}
+    {% assign half = shown.size | divided_by: 2.0 | ceil %}
+    {% assign col1 = shown | slice: 0, half %}
+    {% assign col2 = shown | slice: half, shown.size %}
+
+    <div class="column">
+      {% for t in col1 %}
+        <div class="item {% if t.overdue %}item--emphasis-2{% endif %}">
+          <div class="meta"><span class="index">{{ forloop.index }}</span></div>
+          <div class="content">
+            <span class="title title--small lg:title--large">{{ t.title }}{% if t.due and t.due != "" %} &middot; {{ t.due }}{% if t.due_word and t.due_word != "" %} ({{ t.due_word }}){% endif %}{% endif %}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="column">
+      {% for t in col2 %}
+        <div class="item {% if t.overdue %}item--emphasis-2{% endif %}">
+          <div class="meta"><span class="index">{{ forloop.index | plus: half }}</span></div>
+          <div class="content">
+            <span class="title title--small lg:title--large">{{ t.title }}{% if t.due and t.due != "" %} &middot; {{ t.due }}{% if t.due_word and t.due_word != "" %} ({{ t.due_word }}){% endif %}{% endif %}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if shown.size == 0 %}
+      <div class="column">
+        <span class="label">Nothing on your list. 🎉</span>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="title_bar">
+  <span class="title title--large lg:title--xlarge">{{ plugin_title | default: "Todo" }}</span>
+</div>

@@ -1,0 +1,40 @@
+{% comment %}
+  Full layout (800x480) — paste into the "Full" tab of the Markup Editor.
+  Data comes in via the webhook as merge variables:
+    todos: [{ title, list, due, due_word, overdue }, ...]
+    due is a short literal date (e.g. "Aug 28"), due_word is relative
+    (e.g. "Tomorrow", "3 days ago"). Both blank means no due date.
+    generated_at: ISO timestamp
+
+  Same markup serves every device — lg: classes (Framework's >=1024px
+  breakpoint) bump text size up on TRMNL X's 1872x1404 canvas without
+  touching OG's 800x480, which never crosses that threshold.
+{% endcomment %}
+<div class="layout">
+  <div class="columns">
+    <div class="column">
+      {% if todos and todos.size > 0 %}
+        {% for t in todos %}
+          <div class="item {% if t.overdue %}item--emphasis-2{% elsif t.due_word == "Today" %}item--emphasis-1{% endif %}">
+            <div class="meta">
+              <span class="index">{{ forloop.index }}</span>
+            </div>
+            <div class="content">
+              <span class="title title--small lg:title--large">{{ t.title }}</span>
+              <span class="label label--small lg:label--large label--underline">{{ t.list }}{% if t.due and t.due != "" %} &middot; {{ t.due }}{% if t.due_word and t.due_word != "" %} ({{ t.due_word }}){% endif %}{% endif %}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <span class="label">Nothing on your list. 🎉</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="title_bar">
+  <span class="title title--large lg:title--xlarge">{{ plugin_title | default: "Todo" }}</span>
+  <span class="instance">
+    {% if todos and todos.size > 0 %}{{ todos.size }} open{% endif %}
+  </span>
+</div>

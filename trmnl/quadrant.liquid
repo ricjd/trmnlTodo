@@ -1,0 +1,35 @@
+{% comment %}
+  Quadrant layout (400x240) — paste into the "Quadrant" tab. Tightest space,
+  so we highlight just the most urgent todo and list two more underneath.
+
+  lg: classes bump text size on TRMNL X (>=1024px); OG never reaches that
+  breakpoint so its appearance is unchanged.
+{% endcomment %}
+<div class="layout">
+  <div class="columns">
+    <div class="column">
+      {% if todos and todos.size > 0 %}
+        {% assign next = todos.first %}
+        <div class="item">
+          <div class="content">
+            <span class="value value--small lg:value--xlarge">{{ next.title }}</span>
+            <span class="label lg:label--large">{{ next.list }}{% if next.due and next.due != "" %} &middot; {{ next.due }}{% if next.due_word and next.due_word != "" %} ({{ next.due_word }}){% endif %}{% endif %}</span>
+          </div>
+        </div>
+        {% assign rest = todos | slice: 1, 2 %}
+        {% for t in rest %}
+          <span class="label label--small lg:label">{{ t.title }}{% if t.due and t.due != "" %} &middot; {{ t.due }}{% if t.due_word and t.due_word != "" %} ({{ t.due_word }}){% endif %}{% endif %}</span>
+        {% endfor %}
+      {% else %}
+        <span class="label">Nothing on your list. 🎉</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="title_bar">
+  <span class="title title--large lg:title--xlarge">{{ plugin_title | default: "Todo" }}</span>
+  <span class="instance">
+    {% if todos and todos.size > 0 %}{{ todos.size }} open{% endif %}
+  </span>
+</div>
